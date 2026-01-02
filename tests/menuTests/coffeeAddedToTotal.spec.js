@@ -1,16 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { MenuPage } from '../../src/pages/menu.page';
+import { test } from '@playwright/test';
+import { MenuPage } from '../../src/pages/MenuPage';
 import { COFFEES } from '../../src/constants';
 
-COFFEES.forEach(({ id, name, price }) => {
-  test(`${name} добавляется в итоговую сумму`, async ({ page }) => {
+COFFEES.forEach(({ name, price }) => {
+  test(`${name} is added to total`, async ({ page }) => {
     const menuPage = new MenuPage(page);
 
-    await page.goto('/');
-    await menuPage.addCoffeeToCart(id);
+    await menuPage.open();
+    await menuPage.clickCoffeeCup(name);
 
-    await expect(page.locator('[data-test="total"]')).toHaveText(
-      `$${price.toFixed(2)}`,
-    );
+    await menuPage.assertTotalCheckoutContainsValue(`$${price}.00`);
   });
 });

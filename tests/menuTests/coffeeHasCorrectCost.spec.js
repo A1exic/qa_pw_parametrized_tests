@@ -1,14 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { MenuPage } from '../../src/pages/menu.page';
+import { test } from '@playwright/test';
+import { MenuPage } from '../../src/pages/MenuPage';
 import { COFFEES } from '../../src/constants';
 
-COFFEES.forEach(({ id, name, price }) => {
-  test(`${name} имеет корректную цену`, async ({ page }) => {
+COFFEES.forEach(({ name, price }) => {
+  test(`${name} has correct cost`, async ({ page }) => {
     const menuPage = new MenuPage(page);
 
-    await page.goto('/');
-    await expect(menuPage.getCoffeePrice(id)).toHaveText(
-      `$${price.toFixed(2)}`,
-    );
+    await menuPage.open();
+    await menuPage.assertCoffeeCupCostHasValue(name, `$${price}.00`);
   });
 });

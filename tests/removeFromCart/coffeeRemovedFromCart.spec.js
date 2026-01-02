@@ -1,17 +1,18 @@
-import { test, expect } from '@playwright/test';
-import { MenuPage } from '../../src/pages/menu.page';
-import { CartPage } from '../../src/pages/cart.page';
+import { test } from '@playwright/test';
+import { MenuPage } from '../../src/pages/MenuPage';
+import { CartPage } from '../../src/pages/CartPage';
 import { COFFEES } from '../../src/constants';
 
-COFFEES.forEach(({ id, name }) => {
-  test(`${name} удаляется из корзины`, async ({ page }) => {
+COFFEES.forEach(({ name }) => {
+  test(`${name} can be removed from cart`, async ({ page }) => {
     const menuPage = new MenuPage(page);
     const cartPage = new CartPage(page);
 
-    await page.goto('/');
-    await menuPage.addCoffeeToCart(id);
-    await cartPage.removeCoffee(id);
+    await menuPage.open();
+    await menuPage.clickCoffeeCup(name);
+    await menuPage.clickCartLink();
 
-    await expect(cartPage.cartItem(id)).toHaveCount(0);
+    await cartPage.removeAllCoffee(name);
+    await cartPage.assertCoffeeItemIsHidden(name);
   });
 });
